@@ -1,0 +1,21 @@
+{
+    "java.project.sourcePaths": [
+        "back_end/src",
+        "back_end/crud-produto/src",
+        "back_end/lib"
+    ],
+    "java.project.referencedLibraries": [
+        "lib/**/*.jar",
+        "back_end/lib/gson-2.13.1.jar",
+        "back_end/lib/javax.servlet-api-3.1.0.jar",
+        "back_end/lib/jetty-http-9.4.53.v20231009.jar",
+        "back_end/lib/jetty-io-9.4.53.v20231009.jar",
+        "back_end/lib/jetty-server-9.4.53.v20231009.jar",
+        "back_end/lib/jetty-servlet-9.4.53.v20231009.jar",
+        "back_end/lib/jetty-util-9.4.53.v20231009.jar",
+        "back_end/lib/mysql-connector-j-9.4.0.jar",
+        "back_end/lib/slf4j-api-2.0.17.jar",
+        "back_end/lib/slf4j-simple-2.0.17.jar",
+        "back_end/lib/spark-core-2.9.4.jar"
+    ]
+}
