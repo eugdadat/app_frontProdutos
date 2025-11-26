@@ -1,44 +1,28 @@
-import React, {useState} from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import NavBar from './components/NavBar'; // Caminho correto
+import Home from './pages/Home';
+import Produto from './pages/Produto';
+import Categoria from './pages/Categoria';
+import Listar from './pages/Listar'; // Nome correto do arquivo
+import './App.css';
 
-import NavBar from "./NavBar/NavBar";
-import Lista from "./pages/Lista";
-import Home from "./pages/Home";
-import Produto from "./pages/Produto";
-import Categoria from "./pages/Categoria"  
-
-function App(){
-
-  return(
+function App() {
+  return (
     <Router>
-      <NavBar></NavBar>
-      <Routes>
-        <Route
-        path="/"
-        element={
-          <Home/>
-        }/>
-
-        <Route
-        path="/produto"
-        element={
-          <Produto/>
-        }/>
-
-        <Route
-        path="/listar"
-        element={
-          <Lista/>
-        }/>
-
-         <Route
-        path="/categoria"
-        element={
-          <Categoria/>
-        }/>
-      </Routes>
+      <div className="App">
+        <NavBar />
+        <main>
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/produto" element={<Produto />} />
+            <Route path="/categoria" element={<Categoria />} />
+            <Route path="/listar" element={<Listar />} />
+          </Routes>
+        </main>
+      </div>
     </Router>
-  )
+  );
 }
 
 export default App;

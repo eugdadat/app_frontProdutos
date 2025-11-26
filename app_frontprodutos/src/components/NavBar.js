@@ -1,10 +1,11 @@
 import React from "react";
-import {Link} from "react-router-dom";
-import "../styles/NavBar.css"
+import { Link } from "react-router-dom";
+import "../styles/NavBar.css";
+
 function NavBar(){
     return(
         <nav className="navbar">
-            <h>Sistema de Registro de Produtos e Categorias</h>
+            <h1>Sistema de Registro de Produtos e Categorias</h1>
             <ul>
                 <li><Link to="/">Início</Link></li>
                 <li><Link to="/produto">Inserir novo produto</Link></li>
@@ -14,4 +15,5 @@ function NavBar(){
         </nav>
     )
 }
+
 export default NavBar;
