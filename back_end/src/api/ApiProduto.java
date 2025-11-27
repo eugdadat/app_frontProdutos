@@ -240,6 +240,30 @@ public class ApiProduto {
                 }
         });
 
+        // CORS para fazer a api funcionar
+        options("/*", (request, response) -> {
+
+            String reqHeaders = request.headers("Access-Control-Request-Headers");
+            if (reqHeaders != null) {
+                response.header("Access-Control-Allow-Headers", reqHeaders);
+            }
+
+            String reqMethod = request.headers("Access-Control-Request-Method");
+            if (reqMethod != null) {
+                response.header("Access-Control-Allow-Methods", reqMethod);
+            }
+
+            return "OK";
+        });
+
+        before((request, response) -> {
+            response.header("Access-Control-Allow-Origin", "*");
+            response.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+            response.header("Access-Control-Allow-Headers", "*");
+        });
+
+        after((req, res) -> res.type(APPLICATION_JSON));
+
 
         System.out.println("API de Produtos iniciada na porta 4567. Acesse: http://localhost:4567/produtos");
     }
