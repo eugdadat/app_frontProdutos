@@ -7,11 +7,11 @@ Sistema completo para gerenciar produtos e categorias com interface web moderna.
 Pré-requisitos:
 Antes de começar, você precisa ter instalado:
 
-Node.js (versão 14 ou superior) - Download aqui
+Node.js (versão 14 ou superior) 
 
-Java JDK 8+ - Download aqui
+Java JDK 8+ 
 
-MySQL - Download aqui
+MySQL 
 
 IDE para Java (Eclipse, IntelliJ, VS Code, etc.)
 
