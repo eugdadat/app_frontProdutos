@@ -14,13 +14,13 @@ function Home() {
                 <div className="feature-card">
                     <h3>Gerenciar Produtos</h3>
                     <p>Crie, edite, visualize e exclua produtos do seu catálogo</p>
-                    <Link to="/produto" className="btn-primary">Gerenciar Produtos</Link>
+                    <Link to="/produto" className="btn-primary">Cadastrar Produtos</Link>
                 </div>
                 
                 <div className="feature-card">
                     <h3>Gerenciar Categorias</h3>
                     <p>Organize seus produtos em categorias para melhor controle</p>
-                    <Link to="/categoria" className="btn-primary">Gerenciar Categorias</Link>
+                    <Link to="/categoria" className="btn-primary">Cadastrar Categorias</Link>
                 </div>
                 
                 <div className="feature-card">

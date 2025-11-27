@@ -7,12 +7,13 @@ function Listar() {
     const [abaAtiva, setAbaAtiva] = useState("produtos");
     const [mensagem, setMensagem] = useState("");
     const [tipoMensagem, setTipoMensagem] = useState("");
+    const [idEditando, setIdEditando] = useState(null);
+    const [dadosTemporarios, setDadosTemporarios] = useState({});
 
     useEffect(() => {
+        buscarCategorias();
         if (abaAtiva === "produtos") {
             buscarProdutos();
-        } else {
-            buscarCategorias();
         }
     }, [abaAtiva]);
 
@@ -47,10 +48,6 @@ function Listar() {
     };
 
     const deletarProduto = async (id, nome) => {
-        if (!window.confirm(`Tem certeza que deseja excluir o produto "${nome}"?`)) {
-            return;
-        }
-
         try {
             const response = await fetch(`http://localhost:4567/produtos/${id}`, {
                 method: "DELETE"
@@ -70,10 +67,6 @@ function Listar() {
     };
 
     const deletarCategoria = async (id, nome) => {
-        if (!window.confirm(`Tem certeza que deseja excluir a categoria "${nome}"?`)) {
-            return;
-        }
-
         try {
             const response = await fetch(`http://localhost:4567/categorias/${id}`, {
                 method: "DELETE"
@@ -92,25 +85,41 @@ function Listar() {
         }
     };
 
-    const editarProduto = async (produto) => {
-        const novoNome = prompt("Novo nome do produto:", produto.nome);
-        if (!novoNome) return;
+    const iniciarEdicao = (item, tipo) => {
+        setIdEditando({ id: item.id, tipo: tipo });
+        setDadosTemporarios({ ...item }); 
+    };
 
-        const novoPreco = prompt("Novo preço do produto:", produto.preco);
-        if (!novoPreco) return;
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setDadosTemporarios(prev => ({
+            ...prev,
+            [name]: value
+        }));
+    };
+    
+    const cancelarEdicao = () => {
+        setIdEditando(null);
+        setDadosTemporarios({});
+    };
 
-        const novoEstoque = prompt("Novo estoque do produto:", produto.estoque);
-        if (!novoEstoque) return;
+    const salvarEdicaoProduto = async () => {
+        const { id, nome, preco, estoque, categoria } = dadosTemporarios;
+
+        if (!nome || !preco || !estoque) {
+            mostrarMensagem("Preencha todos os campos do produto.", "erro");
+            return;
+        }
 
         try {
             const produtoAtualizado = {
-                nome: novoNome,
-                preco: parseFloat(novoPreco),
-                estoque: parseInt(novoEstoque),
-                categoria: produto.categoria || null
+                nome: nome,
+                preco: parseFloat(preco),
+                estoque: parseInt(estoque),
+                categoria: categoria.id ? { id: categoria.id, nome: categoria.nome } : null
             };
 
-            const response = await fetch(`http://localhost:4567/produtos/${produto.id}`, {
+            const response = await fetch(`http://localhost:4567/produtos/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
@@ -119,8 +128,9 @@ function Listar() {
             });
 
             if (response.ok) {
-                mostrarMensagem(`Produto "${novoNome}" atualizado com sucesso!`, "sucesso");
+                mostrarMensagem(`Produto "${nome}" atualizado com sucesso!`, "sucesso");
                 buscarProdutos();
+                cancelarEdicao();
             } else {
                 const erro = await response.json();
                 mostrarMensagem(erro.mensagem || "Erro ao atualizar produto", "erro");
@@ -131,22 +141,27 @@ function Listar() {
         }
     };
 
-    const editarCategoria = async (categoria) => {
-        const novoNome = prompt("Novo nome da categoria:", categoria.nome);
-        if (!novoNome) return;
+    const salvarEdicaoCategoria = async () => {
+        const { id, nome } = dadosTemporarios;
+
+        if (!nome) {
+            mostrarMensagem("O nome da categoria não pode estar vazio.", "erro");
+            return;
+        }
 
         try {
-            const response = await fetch(`http://localhost:4567/categorias/${categoria.id}`, {
+            const response = await fetch(`http://localhost:4567/categorias/${id}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nome: novoNome }),
+                body: JSON.stringify({ nome }),
             });
 
             if (response.ok) {
-                mostrarMensagem(`Categoria "${novoNome}" atualizada com sucesso!`, "sucesso");
+                mostrarMensagem(`Categoria "${nome}" atualizada com sucesso!`, "sucesso");
                 buscarCategorias();
+                cancelarEdicao();
             } else {
                 const erro = await response.json();
                 mostrarMensagem(erro.mensagem || "Erro ao atualizar categoria", "erro");
@@ -209,31 +224,87 @@ function Listar() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {produtos.map(produto => (
-                                    <tr key={produto.id}>
-                                        <td>{produto.id}</td>
-                                        <td>{produto.nome}</td>
-                                        <td>R$ {produto.preco?.toFixed(2)}</td>
-                                        <td>{produto.estoque}</td>
-                                        <td>{produto.categoria?.nome || "Sem categoria"}</td>
-                                        <td>
-                                            <div className="acoes-container">
-                                                <button 
-                                                    className="btn-editar"
-                                                    onClick={() => editarProduto(produto)}
-                                                >
-                                                    Editar
-                                                </button>
-                                                <button 
-                                                    className="btn-excluir"
-                                                    onClick={() => deletarProduto(produto.id, produto.nome)}
-                                                >
-                                                    Excluir
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {produtos.map(produto => {
+                                    const estaEditando = idEditando && idEditando.id === produto.id && idEditando.tipo === 'produto';
+                                    
+                                    if (estaEditando) {
+                                        return (
+                                            <tr key={produto.id}>
+                                                <td>{produto.id}</td>
+                                                <td>
+                                                    <input 
+                                                        type="text" 
+                                                        name="nome"
+                                                        value={dadosTemporarios.nome || ''}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input 
+                                                        type="number" 
+                                                        name="preco"
+                                                        step="0.01"
+                                                        value={dadosTemporarios.preco || ''}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <input 
+                                                        type="number" 
+                                                        name="estoque"
+                                                        value={dadosTemporarios.estoque || ''}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    {produto.categoria?.nome || "Sem categoria"}
+                                                </td>
+                                                <td>
+                                                    <div className="acoes-container">
+                                                        <button 
+                                                            className="btn-salvar"
+                                                            onClick={salvarEdicaoProduto}
+                                                        >
+                                                            Salvar
+                                                        </button>
+                                                        <button 
+                                                            className="btn-cancelar"
+                                                            onClick={cancelarEdicao}
+                                                        >
+                                                            Cancelar
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+
+                                    return (
+                                        <tr key={produto.id}>
+                                            <td>{produto.id}</td>
+                                            <td>{produto.nome}</td>
+                                            <td>R$ {produto.preco?.toFixed(2)}</td>
+                                            <td>{produto.estoque}</td>
+                                            <td>{produto.categoria?.nome || "Sem categoria"}</td>
+                                            <td>
+                                                <div className="acoes-container">
+                                                    <button 
+                                                        className="btn-editar"
+                                                        onClick={() => iniciarEdicao(produto, 'produto')}
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                    <button 
+                                                        className="btn-excluir"
+                                                        onClick={() => deletarProduto(produto.id, produto.nome)}
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     )}
@@ -255,28 +326,64 @@ function Listar() {
                                 </tr>
                             </thead>
                             <tbody>
-                                {categorias.map(categoria => (
-                                    <tr key={categoria.id}>
-                                        <td>{categoria.id}</td>
-                                        <td>{categoria.nome}</td>
-                                        <td>
-                                            <div className="acoes-container">
-                                                <button 
-                                                    className="btn-editar"
-                                                    onClick={() => editarCategoria(categoria)}
-                                                >
-                                                    Editar
-                                                </button>
-                                                <button 
-                                                    className="btn-excluir"
-                                                    onClick={() => deletarCategoria(categoria.id, categoria.nome)}
-                                                >
-                                                    Excluir
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                ))}
+                                {categorias.map(categoria => {
+                                    const estaEditando = idEditando && idEditando.id === categoria.id && idEditando.tipo === 'categoria';
+
+                                    if (estaEditando) {
+                                        return (
+                                            <tr key={categoria.id}>
+                                                <td>{categoria.id}</td>
+                                                <td>
+                                                    <input 
+                                                        type="text" 
+                                                        name="nome"
+                                                        value={dadosTemporarios.nome || ''}
+                                                        onChange={handleInputChange}
+                                                    />
+                                                </td>
+                                                <td>
+                                                    <div className="acoes-container">
+                                                        <button 
+                                                            className="btn-salvar"
+                                                            onClick={salvarEdicaoCategoria}
+                                                        >
+                                                            Salvar
+                                                        </button>
+                                                        <button 
+                                                            className="btn-cancelar"
+                                                            onClick={cancelarEdicao}
+                                                        >
+                                                            Cancelar
+                                                        </button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        );
+                                    }
+
+                                    return (
+                                        <tr key={categoria.id}>
+                                            <td>{categoria.id}</td>
+                                            <td>{categoria.nome}</td>
+                                            <td>
+                                                <div className="acoes-container">
+                                                    <button 
+                                                        className="btn-editar"
+                                                        onClick={() => iniciarEdicao(categoria, 'categoria')}
+                                                    >
+                                                        Editar
+                                                    </button>
+                                                    <button 
+                                                        className="btn-excluir"
+                                                        onClick={() => deletarCategoria(categoria.id, categoria.nome)}
+                                                    >
+                                                        Excluir
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </tbody>
                         </table>
                     )}
