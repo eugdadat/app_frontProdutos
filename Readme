@@ -1,0 +1,145 @@
+Sistema de Registro de Produtos e Categorias
+Sistema completo para gerenciar produtos e categorias com interface web moderna.
+
+Pré-requisitos:
+Antes de começar, você precisa ter instalado:
+
+Node.js (versão 14 ou superior) - Download aqui
+
+Java JDK 8+ - Download aqui
+
+MySQL - Download aqui
+
+IDE para Java (Eclipse, IntelliJ, VS Code, etc.)
+
+Como Rodar o Sistema:
+1. Configurar a Conexão com o Banco
+No arquivo ConnectionFactory.java, altere a senha do MySQL:
+java
+private static final String PASS = "sua-senha-do-mysql"; // Coloque sua senha aqui
+
+2. Executar o Backend (API Java)
+No seu IDE:
+Abra o projeto Java na IDE
+Navegue até o arquivo: src/main/java/api/ApiProduto.java
+Clique com o botão direito no arquivo ApiProduto.java
+Selecione "Run Java" ou "Run ApiProduto"
+
+O backend irá:
+Iniciar na porta 4567
+Exibir mensagem: "API de Produtos iniciada na porta 4567"
+Ficar aguardando requisições
+
+3. Executar o Frontend (React)
+Abra um NOVO terminal e navegue até a pasta do frontend:
+bash
+cd app_frontprodutos
+Instale as dependências (se for a primeira vez):
+bash
+npm install
+Inicie a aplicação React:
+bash
+npm start
+O frontend irá:
+Iniciar na porta 3000
+
+Abrir automaticamente no navegador
+
+Exibir a página inicial do sistema
+
+Como Usar o Sistema-
+
+Página Inicial
+Acesso: http://localhost:3000
+
+Funcionalidades:
+Visão geral do sistema
+Cards de navegação rápida
+Acesso a todas as funcionalidades
+
+Gerenciar Produtos-
+Cadastrar Novo Produto:
+Clique em "Gerenciar Produtos" na Home ou "Inserir novo produto" no menu
+
+Preencha os campos:
+Nome do Produto (obrigatório)
+Preço (obrigatório)
+Estoque (opcional)
+Categoria (selecionar uma existente)
+Clique em "Cadastrar Produto"
+
+Editar Produto:
+Vá para "Listar" no menu
+Selecione a aba "Produtos"
+Clique em "Editar" no produto desejado
+Digite os novos valores nos prompts
+Confirme as alterações
+
+Excluir Produto:
+Vá para "Listar" no menu
+Selecione a aba "Produtos"
+Clique em "Excluir" no produto desejado
+Confirme a exclusão no popup
+
+Gerenciar Categorias-
+Cadastrar Nova Categoria:
+Clique em "Gerenciar Categorias" na Home ou "Inserir nova categoria" no menu
+Digite o Nome da Categoria
+Clique em "Cadastrar Categoria"
+
+Editar Categoria:
+Vá para "Listar" no menu
+Selecione a aba "Categorias"
+Clique em "Editar" na categoria desejada
+Digite o novo nome no prompt
+Confirme a alteração
+
+Excluir Categoria:
+Vá para "Listar" no menu
+Selecione a aba "Categorias"
+Clique em "Excluir" na categoria desejada
+Confirme a exclusão no popup
+
+Importante: Não é possível excluir categorias que estão sendo usadas por produtos.
+
+Listar Dados-
+Visualizar Todos os Itens:
+Clique em "Listar" no menu
+Alternar entre as abas "Produtos" e "Categorias"
+Veja todas as informações em formato de tabela
+
+Solução de Problemas-
+Backend não inicia:
+Verifique se o Java JDK está instalado corretamente
+Confirme se a porta 4567 não está sendo usada por outro programa
+Verifique as dependências no pom.xml
+
+Erro de conexão com o banco:
+Confirme que o MySQL está rodando
+Verifique a senha no ConnectionFactory.java
+Certifique-se de que o banco aulajdbc existe
+
+Frontend não carrega:
+Execute cd app_frontprodutos antes do npm start
+Verifique se o Node.js está instalado: node --version
+Execute npm install se for a primeira vez
+
+Frontend não conecta com backend:
+Certifique-se de que o backend está rodando antes do frontend
+Verifique se o backend iniciou na porta 4567
+Confirme a URL da API no navegador
+
+Suporte-
+Se encontrar problemas:
+Backend (Java): Verifique o console do IDE por mensagens de erro
+Frontend (React): Verifique o console do navegador (F12)
+Banco de Dados: Confirme que o MySQL está ativo e as tabelas foram criadas
+
+Próximos Passos
+Após configurar o sistema, você pode:
+Cadastrar algumas categorias primeiro
+Depois cadastrar produtos vinculados às categorias
+Usar a funcionalidade de listagem para ver todos os dados
+Testar edições e exclusões
+
+Sistema pronto para uso! Acesse http://localhost:3000 e comece a gerenciar seus produtos e categorias.
