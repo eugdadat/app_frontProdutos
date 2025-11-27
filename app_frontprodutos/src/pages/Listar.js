@@ -92,6 +92,71 @@ function Listar() {
         }
     };
 
+    const editarProduto = async (produto) => {
+        const novoNome = prompt("Novo nome do produto:", produto.nome);
+        if (!novoNome) return;
+
+        const novoPreco = prompt("Novo preço do produto:", produto.preco);
+        if (!novoPreco) return;
+
+        const novoEstoque = prompt("Novo estoque do produto:", produto.estoque);
+        if (!novoEstoque) return;
+
+        try {
+            const produtoAtualizado = {
+                nome: novoNome,
+                preco: parseFloat(novoPreco),
+                estoque: parseInt(novoEstoque),
+                categoria: produto.categoria || null
+            };
+
+            const response = await fetch(`http://localhost:4567/produtos/${produto.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify(produtoAtualizado),
+            });
+
+            if (response.ok) {
+                mostrarMensagem(`Produto "${novoNome}" atualizado com sucesso!`, "sucesso");
+                buscarProdutos();
+            } else {
+                const erro = await response.json();
+                mostrarMensagem(erro.mensagem || "Erro ao atualizar produto", "erro");
+            }
+        } catch (error) {
+            console.error("Erro:", error);
+            mostrarMensagem("Erro de conexão com o servidor", "erro");
+        }
+    };
+
+    const editarCategoria = async (categoria) => {
+        const novoNome = prompt("Novo nome da categoria:", categoria.nome);
+        if (!novoNome) return;
+
+        try {
+            const response = await fetch(`http://localhost:4567/categorias/${categoria.id}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ nome: novoNome }),
+            });
+
+            if (response.ok) {
+                mostrarMensagem(`Categoria "${novoNome}" atualizada com sucesso!`, "sucesso");
+                buscarCategorias();
+            } else {
+                const erro = await response.json();
+                mostrarMensagem(erro.mensagem || "Erro ao atualizar categoria", "erro");
+            }
+        } catch (error) {
+            console.error("Erro:", error);
+            mostrarMensagem("Erro de conexão com o servidor", "erro");
+        }
+    };
+
     const mostrarMensagem = (msg, tipo) => {
         setMensagem(msg);
         setTipoMensagem(tipo);
@@ -152,12 +217,20 @@ function Listar() {
                                         <td>{produto.estoque}</td>
                                         <td>{produto.categoria?.nome || "Sem categoria"}</td>
                                         <td>
-                                            <button 
-                                                className="btn-excluir"
-                                                onClick={() => deletarProduto(produto.id, produto.nome)}
-                                            >
-                                                Excluir
-                                            </button>
+                                            <div className="acoes-container">
+                                                <button 
+                                                    className="btn-editar"
+                                                    onClick={() => editarProduto(produto)}
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button 
+                                                    className="btn-excluir"
+                                                    onClick={() => deletarProduto(produto.id, produto.nome)}
+                                                >
+                                                    Excluir
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
@@ -187,12 +260,20 @@ function Listar() {
                                         <td>{categoria.id}</td>
                                         <td>{categoria.nome}</td>
                                         <td>
-                                            <button 
-                                                className="btn-excluir"
-                                                onClick={() => deletarCategoria(categoria.id, categoria.nome)}
-                                            >
-                                                Excluir
-                                            </button>
+                                            <div className="acoes-container">
+                                                <button 
+                                                    className="btn-editar"
+                                                    onClick={() => editarCategoria(categoria)}
+                                                >
+                                                    Editar
+                                                </button>
+                                                <button 
+                                                    className="btn-excluir"
+                                                    onClick={() => deletarCategoria(categoria.id, categoria.nome)}
+                                                >
+                                                    Excluir
+                                                </button>
+                                            </div>
                                         </td>
                                     </tr>
                                 ))}
